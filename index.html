@@ -374,22 +374,51 @@
                 inset 0 0 40px rgba(212, 175, 55, 0.12);
         }
 
-        /* Dòng kẻ giấy thư cổ điển tinh tế */
-        .calligraphy-lines {
-            background-image: linear-gradient(transparent calc(100% - 1px), rgba(212, 175, 55, 0.22) calc(100% - 1px));
-            background-size: 100% 2.25rem;
-            line-height: 2.25rem;
+        /* Dòng kẻ giấy thư cổ điển đồng bộ chính xác 100% với chiều cao dòng chữ */
+        .letter-lines-container {
+            --line-h: 34px;
+            font-size: 1.08rem;
+            line-height: var(--line-h);
+            padding-top: 0;
+            margin: 0;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent calc(var(--line-h) - 1px),
+                rgba(212, 163, 115, 0.3) calc(var(--line-h) - 1px),
+                rgba(212, 163, 115, 0.3) var(--line-h)
+            );
+            background-attachment: local;
+            background-position: 0 4px;
         }
 
-        /* Tối ưu thanh cuộn cho lá thư trên điện thoại */
+        @media (min-width: 640px) {
+            .letter-lines-container {
+                --line-h: 38px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Mỗi đoạn văn cách nhau đúng bằng 1 dòng kẻ (--line-h) để không bao giờ bị lệch dòng */
+        .letter-lines-container p {
+            margin-top: 0;
+            margin-bottom: var(--line-h);
+            line-height: var(--line-h);
+        }
+
+        .letter-lines-container p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Tối ưu thanh cuộn siêu mảnh cho lá thư trên điện thoại */
         .custom-scroll::-webkit-scrollbar {
-            width: 5px;
+            width: 4px;
         }
         .custom-scroll::-webkit-scrollbar-track {
             background: transparent;
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-            background: rgba(212, 175, 55, 0.45);
+            background: rgba(212, 175, 55, 0.32);
             border-radius: 9999px;
         }
     </style>
@@ -707,14 +736,14 @@
                     </div>
 
                     <!-- Vùng nội dung thư (Có thanh cuộn mượt trên màn hình điện thoại) -->
-                    <div class="custom-scroll max-h-[50dvh] sm:max-h-[55dvh] overflow-y-auto px-1 sm:px-2">
+                    <div class="custom-scroll max-h-[52dvh] sm:max-h-[56dvh] overflow-y-auto px-1.5 sm:px-3">
                         <!-- Lời chào / Tên Cô -->
-                        <h2 id="letterTeacherTitle" class="font-script text-3xl sm:text-4xl text-rose-900 mb-3 sm:mb-4 text-center sm:text-left leading-snug">
+                        <h2 id="letterTeacherTitle" class="font-script text-2xl sm:text-4xl text-rose-900 mb-3 sm:mb-4 text-center sm:text-left leading-snug">
                             Kính gửi Cô Trần Thị Xuân Đào kính yêu!
                         </h2>
 
-                        <!-- Nội dung tâm thư của học sinh -->
-                        <div id="letterBodyContent" class="calligraphy-lines font-serif text-stone-800 text-lg sm:text-xl font-medium space-y-3 whitespace-pre-line text-justify sm:text-left"></div>
+                        <!-- Nội dung tâm thư của học sinh (Tự động căn chuẩn trên từng dòng kẻ) -->
+                        <div id="letterBodyContent" class="letter-lines-container font-serif text-stone-800 font-medium text-left"></div>
 
                         <!-- Chữ ký người gửi / Tập thể học sinh -->
                         <div class="mt-6 pt-3 border-t border-amber-400/30 flex flex-col items-end text-right">
@@ -858,7 +887,19 @@
             document.getElementById('envelopeCornerName').textContent = name;
             document.getElementById('previewGreetingInside').textContent = `Kính gửi ${name}!`;
             document.getElementById('letterTeacherTitle').textContent = `Kính gửi ${name} kính yêu!`;
-            document.getElementById('letterBodyContent').textContent = cardState.wishBody;
+
+            // Tách từng đoạn văn thành thẻ <p> có chiều cao đồng bộ tuyệt đối với dòng kẻ
+            const bodyContainer = document.getElementById('letterBodyContent');
+            bodyContainer.innerHTML = '';
+            const paragraphs = cardState.wishBody.split(/\n\s*\n/);
+            paragraphs.forEach(para => {
+                if (para.trim()) {
+                    const p = document.createElement('p');
+                    p.textContent = para.trim().replace(/\n/g, ' ');
+                    bodyContainer.appendChild(p);
+                }
+            });
+
             document.getElementById('letterStudentSignature').textContent = cardState.studentSign;
 
             // Đồng bộ vào form modal
@@ -1261,4 +1302,4 @@
         };
     </script>
 </body>
-                                      </html>
+</html>
