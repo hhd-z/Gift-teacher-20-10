@@ -121,4 +121,7 @@ https://<username>.github.io/<repo>/?to=GV%20Chủ%20Nhiệm&from=Tập%20thể%
 <div align="center">
   <p>Được thiết kế và phát triển với tất cả lòng biết ơn dành tặng <strong>GV</strong> nhân ngày Phụ nữ Việt Nam 20/10 💐</p>
   <p>Nếu bạn thấy dự án này ý nghĩa, hãy tặng một ⭐ <strong>Star</strong> trên GitHub nhé!</p>
+
+![QR Donate](./donateejpng)
+
 </div>
